@@ -5,6 +5,7 @@ import httpStatus from "http-status";
 // import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import { productsRoute } from "./app/modules/Products/products.route";
+import { ordersRoute } from "./app/modules/Orders/order.route";
 
 const corsOptions = {
   origin: ["*", "http://localhost:5173"],
@@ -24,6 +25,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 //products
 app.use("/api", productsRoute);
+app.use("/api", ordersRoute);
 
 // global error handler
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
