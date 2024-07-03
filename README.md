@@ -124,8 +124,8 @@ This project aims to develop an E-Commerce application using Express with TypeSc
 
 ### Retrieve All Orders
 
-- Endpoint: /api/orders
-- Method: GET
+- Endpoint: `/api/orders`
+- Method: `GET`
 
 ### Retrieve Orders by User Email
 
@@ -164,3 +164,9 @@ This project aims to develop an E-Commerce application using Express with TypeSc
 ### Validation
 
 - Data validation is implemented using Zod to ensure data integrity.
+
+- #### Note
+
+<> This Project not yet completed , will be soon completed. </>
+
+        Happay Coding...
