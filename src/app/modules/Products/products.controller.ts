@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import ProductModel from "./products.model";
+import { IProduct } from "./products.interface";
 
 const createProduct = async (req: Request, res: Response) => {
   try {
@@ -27,24 +28,45 @@ const createProduct = async (req: Request, res: Response) => {
 };
 const products = async (req: Request, res: Response) => {
   try {
-    const result = await ProductModel.find({});
-    if (result) {
-      return res.status(201).json({
+    let result: IProduct[];
+
+    if (req.query.searchTerm) {
+      const searchTerm = req.query.searchTerm as string;
+      const regex = new RegExp(searchTerm, "i");
+
+      result = await ProductModel.find({
+        $or: [
+          { name: { $regex: regex } },
+          { description: { $regex: regex } },
+          { category: { $regex: regex } },
+          { tags: { $in: [regex] } },
+        ],
+      });
+    } else {
+      result = await ProductModel.find({});
+    }
+
+    if (result.length > 0) {
+      return res.status(200).json({
         success: true,
-        message: "Products fetched successfully!",
+        message: req.query.searchTerm
+          ? `Products matching search term '${req.query.searchTerm}' fetched successfully!`
+          : "All products fetched successfully!",
         data: result,
       });
     } else {
-      return res.status(500).json({
+      return res.status(404).json({
         success: false,
-        message: "Failed to fetched Product.",
+        message: req.query.searchTerm
+          ? `No products found matching search term '${req.query.searchTerm}'`
+          : "No products found.",
       });
     }
   } catch (error) {
-    console.error("Error creating Product:", error);
+    console.error("Error fetching products:", error);
     return res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: "Internal server error",
     });
   }
 };
