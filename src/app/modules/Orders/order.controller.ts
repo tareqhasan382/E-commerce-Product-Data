@@ -57,22 +57,28 @@ const createOrder = async (req: Request, res: Response) => {
 };
 const orders = async (req: Request, res: Response) => {
   try {
-    const result = await OrderModel.find({});
+    let result;
 
-    if (result) {
+    if (req.query.email) {
+      result = await OrderModel.find({ email: req.query.email });
+    } else {
+      result = await OrderModel.find({});
+    }
+
+    if (result.length > 0) {
       return res.status(200).json({
         success: true,
-        message: "Order fetched successfully!",
+        message: "Orders fetched successfully!",
         data: result,
       });
     } else {
       return res.status(404).json({
         success: false,
-        message: "Order not found.",
+        message: "No orders found.",
       });
     }
   } catch (error) {
-    console.error("Error fetching Order:", error);
+    console.error("Error fetching orders:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
