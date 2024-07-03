@@ -165,8 +165,8 @@ This project aims to develop an E-Commerce application using Express with TypeSc
 
 - Data validation is implemented using Zod to ensure data integrity.
 
+        Happay Coding...
+
 - #### Note
 
 <> This Project not yet completed , will be soon completed. </>
-
-        Happay Coding...
