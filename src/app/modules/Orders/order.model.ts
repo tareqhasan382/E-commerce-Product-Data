@@ -14,4 +14,3 @@ const orderSchema = new Schema<IOrder>(
 const OrderModel = model<IOrder, IOrderModel>("orders", orderSchema);
 
 export default OrderModel;
-// room: { type: Schema.Types.ObjectId, ref: "rooms", required: true },

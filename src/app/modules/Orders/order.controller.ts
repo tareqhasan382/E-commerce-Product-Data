@@ -1,11 +1,13 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import OrderModel from "./order.model";
 import ProductModel from "../Products/products.model";
+import { OrderZodSchema } from "./order.validation";
 
-const createOrder = async (req: Request, res: Response) => {
+const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   const { productId, quantity } = req.body;
 
   try {
+    const ZodvalidatedOrder = OrderZodSchema.parse(req.body);
     // Check if the product exists
     const product = await ProductModel.findById(productId);
     if (!product) {
@@ -34,7 +36,7 @@ const createOrder = async (req: Request, res: Response) => {
         "inventory.inStock": newInStock,
       },
     });
-    const result = await OrderModel.create(req.body);
+    const result = await OrderModel.create(ZodvalidatedOrder);
     if (result) {
       return res.status(201).json({
         success: true,
@@ -48,14 +50,10 @@ const createOrder = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    console.error("Error creating order:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-    });
+    next(error);
   }
 };
-const orders = async (req: Request, res: Response) => {
+const orders = async (req: Request, res: Response, next: NextFunction) => {
   try {
     let result;
 
@@ -78,11 +76,7 @@ const orders = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    console.error("Error fetching orders:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    next(error);
   }
 };
 
