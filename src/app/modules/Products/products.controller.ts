@@ -1,11 +1,18 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import ProductModel from "./products.model";
 import { IProduct } from "./products.interface";
+import { ProductZodSchema } from "./products.validation";
 
-const createProduct = async (req: Request, res: Response) => {
+const createProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const data = req.body;
-    const result = await ProductModel.create(data);
+    const ZodvalidatedProduct = ProductZodSchema.parse(data);
+
+    const result = await ProductModel.create(ZodvalidatedProduct);
     if (result) {
       return res.status(201).json({
         success: true,
@@ -19,14 +26,10 @@ const createProduct = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    console.error("Error creating Product:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-    });
+    next(error);
   }
 };
-const products = async (req: Request, res: Response) => {
+const products = async (req: Request, res: Response, next: NextFunction) => {
   try {
     let result: IProduct[];
 
@@ -63,14 +66,10 @@ const products = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    console.error("Error fetching products:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    next(error);
   }
 };
-const productById = async (req: Request, res: Response) => {
+const productById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const productId = req.params.productId;
     const result = await ProductModel.findById(productId);
@@ -88,14 +87,14 @@ const productById = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    console.error("Error fetching product:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    next(error);
   }
 };
-const updateProduct = async (req: Request, res: Response) => {
+const updateProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const productId = req.params.productId;
     const updateData = req.body;
@@ -120,14 +119,14 @@ const updateProduct = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    console.error("Error updating product:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    next(error);
   }
 };
-const deleteProduct = async (req: Request, res: Response) => {
+const deleteProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const productId = req.params.productId;
     const deletedProduct = await ProductModel.findByIdAndDelete(productId);
@@ -145,11 +144,7 @@ const deleteProduct = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    console.error("Error deleting product:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    next(error);
   }
 };
 

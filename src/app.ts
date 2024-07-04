@@ -2,7 +2,6 @@ import express, { Application, NextFunction, Request, Response } from "express";
 const app: Application = express();
 import cors from "cors";
 import httpStatus from "http-status";
-// import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import { productsRoute } from "./app/modules/Products/products.route";
 import { ordersRoute } from "./app/modules/Orders/order.route";
@@ -12,12 +11,12 @@ const corsOptions = {
   credentials: true,
   optionSuccessStatus: 200,
 };
+//parser
+app.use(express.json());
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-// app.use(cookieParser());
-//parser
-app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
 // Applications route
 app.get("/", (req: Request, res: Response) => {
@@ -30,25 +29,12 @@ app.use("/api", ordersRoute);
 // global error handler
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const errorStatus = err.status || 500;
-  const errorMessage = err.message || "Something went wrong";
-
-  // Split the error message by slash ('/') and check if it produces an array with more than one element
-  const errorMessageParts = errorMessage.split("/");
-  const messageAfterSlash =
-    errorMessageParts.length > 1 ? errorMessageParts[1].trim() : errorMessage;
-
-  const stack = err.stack || "";
-
-  // Split the stack trace by slash ('/') and check if it produces an array with more than one element
-  const stackAfterSlash =
-    stack.split("/").length > 1 ? stack.split("/")[1].trim() : stack;
 
   return res.status(errorStatus).json({
     success: false,
     status: errorStatus,
-    message: messageAfterSlash,
-    stack: stackAfterSlash,
-    name: err.name,
+    message: "Something went wrong",
+    err,
   });
 });
 
