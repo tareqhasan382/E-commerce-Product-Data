@@ -165,8 +165,53 @@ This project aims to develop an E-Commerce application using Express with TypeSc
 
 - Data validation is implemented using Zod to ensure data integrity.
 
+### Installation
+
+1. **Clone the repository**:
+
+```bash
+git clone <repository_url>
+cd <repository_directory>
+```
+
+2. **Install dependencies**
+
+```bash
+npm install
+```
+
+3. **Create a .env file in the root project directory**
+
+```bash
+PORT=8000
+DATABASE_URL=mongodb+srv://<username>:<password>@<cluster-url>/<database>?retryWrites=true&w=majority
+```
+
+4. **Run the development server:**
+
+```bash
+npm run dev
+```
+
+5. **Access the application:**
+   Open your web browser and go to http://localhost:8000/api/products
+
+## Folder Structure
+
+    ├── src
+    │   ├── app
+    │   │   ├── middleware
+    │   │   └── modules
+    │   │       ├── Orders
+    │   │       └── Products
+    │   │── config
+    │   │── app.ts
+    │   └── server.ts
+    ├── .env
+    ├── .gitignore
+    ├── package.json
+    └── README.md
+
+<> </>
+
         Happay Coding...
-
-- #### Note
-
-<> This Project not yet completed , will be soon completed. </>
